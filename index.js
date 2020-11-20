@@ -1,4 +1,4 @@
-import { Observable, Subscription } from 'rxjs';
+import { fromEvent } from 'rxjs';
 
 /*
  * Any code samples you want to play with can go in this file.
@@ -7,30 +7,17 @@ import { Observable, Subscription } from 'rxjs';
  */
 
 const observer = {
-  next: (value) => console.log('next', value),
-  error: (error) => console.log('error', error),
+  next: (val) => console.log('next', val),
+  error: (err) => console.log('error', err),
   complete: () => console.log('complete!'),
 };
 
-const observable = new Observable((subscriber) => {
-  let count = 0;
-  const id = setInterval(() => {
-    subscriber.next(count);
-    count += 1;
-  }, 1000);
-  return () => {
-    clearInterval(id);
-    console.log('called');
-  };
-});
+const source$ = fromEvent(document, 'keyup');
 
-// console.log('before');
-const subscription = observable.subscribe(observer);
-const subscriptionTwo = observable.subscribe(observer);
+const sub1 = source$.subscribe(observer);
+const sub2 = source$.subscribe(observer);
 
-subscription.add(subscriptionTwo);
-
-// console.log('after');
 setTimeout(() => {
-  subscription.unsubscribe();
-}, 3500);
+  console.log('unsubscribing');
+  sub1.unsubscribe();
+}, 3000);
