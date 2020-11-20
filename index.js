@@ -1,4 +1,4 @@
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 /*
  * Any code samples you want to play with can go in this file.
@@ -16,7 +16,6 @@ const observable = new Observable((subscriber) => {
   let count = 0;
   const id = setInterval(() => {
     subscriber.next(count);
-    subscriber.complete();
     count += 1;
   }, 1000);
   return () => {
@@ -25,6 +24,13 @@ const observable = new Observable((subscriber) => {
   };
 });
 
-console.log('before');
-observable.subscribe(observer);
-console.log('after');
+// console.log('before');
+const subscription = observable.subscribe(observer);
+const subscriptionTwo = observable.subscribe(observer);
+
+subscription.add(subscriptionTwo);
+
+// console.log('after');
+setTimeout(() => {
+  subscription.unsubscribe();
+}, 3500);
